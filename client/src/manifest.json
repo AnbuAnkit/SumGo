@@ -1,0 +1,11 @@
+{
+  "name": "Sum-Go",
+  "description": "Website summerization tool",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["tabs", "activeTab", "scripting"],
+  "action": {
+    "default_popup": "sample.html",
+    "default_icon": "logo.png"
+  }
+}
