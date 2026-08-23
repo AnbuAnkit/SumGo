@@ -1,9 +1,16 @@
+import { useState } from "react";
+
 function InputField(){
- return(
+    const [usertxt, newUsertxt] = useState("")
+ return(<div>
     <form>
-        <label>Enter text here</label>
-        <input type="text" placeholder="Enter text here"></input>
+        {/* <label>Enter text here</label> */}
+        <input type="text" placeholder="Enter text here" onChange={()=>{
+            newUsertxt(event.target.value)
+            console.timeLog(usertxt)
+        }}></input>
     </form>
+    </div>
  )
 }
 
