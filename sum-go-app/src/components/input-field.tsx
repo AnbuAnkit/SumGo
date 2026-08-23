@@ -7,7 +7,7 @@ function InputField(){
         {/* <label>Enter text here</label> */}
         <input type="text" placeholder="Enter text here" onChange={()=>{
             newUsertxt(event.target.value)
-            console.timeLog(usertxt)
+            console.timeLog(usertxt) 
         }}></input>
     </form>
     </div>

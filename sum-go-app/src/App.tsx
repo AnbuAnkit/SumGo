@@ -4,8 +4,8 @@ import Message from './exp';
 import ChatBar from './components/chat-bar';
 
 function App(){
-  return <>
+  return <div>
     <ChatBar />
-  </>;
+  <div />;
 }
 export default App;
