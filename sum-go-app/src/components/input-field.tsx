@@ -1,17 +1,22 @@
-import { useState } from "react";
+type InputFieldProps = {
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+};
 
-function InputField(){
-    const [usertxt, newUsertxt] = useState("")
- return(<div>
-    <form>
-        {/* <label>Enter text here</label> */}
-        <input type="text" placeholder="Enter text here" onChange={()=>{
-            newUsertxt(event.target.value)
-            console.timeLog(usertxt) 
-        }}></input>
-    </form>
-    </div>
- )
+function InputField({ value, onChange, disabled = false }: InputFieldProps) {
+  return (
+    <input
+      className="chat-input"
+      type="text"
+      value={value}
+      placeholder="Type a message…"
+      aria-label="Message"
+      autoComplete="off"
+      disabled={disabled}
+      onChange={(event) => onChange(event.target.value)}
+    />
+  );
 }
 
 export default InputField;

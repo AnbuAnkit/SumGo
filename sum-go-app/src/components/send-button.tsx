@@ -1,15 +1,13 @@
-import { useState } from "react";
+type SendButtonProps = {
+  disabled?: boolean;
+};
 
-function SendButton(){
-    
-    
-    return(
-    <button style={{width:'50px', height:'20px'}}>send
-            {/* <img src='./send-button.jpg' width='50' height='20' />; */}
-        </button>
-    )
-        
-    
+function SendButton({ disabled = false }: SendButtonProps) {
+  return (
+    <button className="send-button" type="submit" disabled={disabled} aria-label="Send message">
+      Send
+    </button>
+  );
 }
 
 export default SendButton;
