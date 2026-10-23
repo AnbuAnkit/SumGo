@@ -4,26 +4,33 @@ import ChatBubble, { type ChatMessage } from './components/chat-bubble';
 import './App.css';
 
 const BOT_NAME = 'Sum';
-const REPLY_DELAY_MS = 600;
+const API_BASE = 'http://localhost:8000';
 
-function getBotReply(text: string): string {
-  const message = text.trim().toLowerCase();
+type ChatReplyBody = { reply?: string; detail?: string };
 
-  if (/^(hi|hey|hello|yo|sup)\b/.test(message)) {
-    return 'Hey! How can I help you today?';
+async function requestReply(message: string): Promise<string> {
+  const response = await fetch(`${API_BASE}/api/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message }),
+  });
+
+  const body = (await response.json().catch(() => null)) as ChatReplyBody | null;
+
+  if (!response.ok) {
+    throw new Error(body?.detail ?? `Backend responded with ${response.status}`);
   }
-  if (/thank/.test(message)) {
-    return "You're welcome! Anything else?";
-  }
-  if (message.endsWith('?')) {
-    return "Good question. I'm a placeholder bot for now, so hook me up to an API and I'll answer for real.";
-  }
-  return `Got it: "${text.trim()}". Tell me more.`;
+
+  return body?.reply ?? '';
 }
 
 function App() {
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: 0, role: 'bot', text: `Hi, I'm ${BOT_NAME}. Send a message to get started.` },
+    {
+      id: 0,
+      role: 'bot',
+      text: `Hi, I'm ${BOT_NAME}. Open the extension on a page, then ask me about it.`,
+    },
   ]);
   const [isReplying, setIsReplying] = useState(false);
   const nextId = useRef(1);
@@ -33,23 +40,26 @@ function App() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [messages, isReplying]);
 
-  function handleSend(text: string) {
+  function addMessage(role: 'user' | 'bot', text: string) {
+    setMessages((previous) => [...previous, { id: nextId.current++, role, text }]);
+  }
+
+  async function handleSend(text: string) {
     const trimmed = text.trim();
     if (trimmed === '' || isReplying) return;
 
-    const userMessage: ChatMessage = { id: nextId.current++, role: 'user', text: trimmed };
-    setMessages((previous) => [...previous, userMessage]);
+    addMessage('user', trimmed);
     setIsReplying(true);
 
-    window.setTimeout(() => {
-      const botMessage: ChatMessage = {
-        id: nextId.current++,
-        role: 'bot',
-        text: getBotReply(trimmed),
-      };
-      setMessages((previous) => [...previous, botMessage]);
+    try {
+      const reply = await requestReply(trimmed);
+      addMessage('bot', reply);
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : 'Something went wrong.';
+      addMessage('bot', `Couldn't get a reply. ${reason}`);
+    } finally {
       setIsReplying(false);
-    }, REPLY_DELAY_MS);
+    }
   }
 
   return (
@@ -61,7 +71,7 @@ function App() {
           </span>
           <div className="chat-identity">
             <h1 className="chat-title">{BOT_NAME}</h1>
-            <p className="chat-status">{isReplying ? 'typing…' : 'online'}</p>
+            <p className="chat-status">{isReplying ? 'summarizing…' : 'online'}</p>
           </div>
         </header>
 
