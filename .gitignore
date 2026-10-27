@@ -1,2 +1,14 @@
+# Node / extension
+node_modules/
+dist/
+*.log
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+
+# Secrets
 .env
-.venv
+.env.local
+

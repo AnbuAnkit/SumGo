@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "PageChat",
+  "version": "1.0.0",
+  "description": "Chat with an AI agent about the page you have open. The agent can read your current tab and search the web.",
+  "permissions": ["tabs", "activeTab"],
+  "host_permissions": ["http://localhost:8000/*", "http://127.0.0.1:8000/*"],
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Chat about this page"
+  }
+}
